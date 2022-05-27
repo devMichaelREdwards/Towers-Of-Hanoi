@@ -20,7 +20,7 @@ namespace Towers_Of_Hanoi {
 			NumOfDisks = Int32.Parse(NumInput.Text);
 			SetButtons(true);
 			tower = new Tower(NumOfDisks);
-			reqMoveCount.Text = tower.MovesToSolve().ToString();
+			reqMoveCount.Text = tower.MovesToSolve;
 			numMovesCount.Text = MoveCount.ToString();
 			SetPoles();
 		}
@@ -28,8 +28,7 @@ namespace Towers_Of_Hanoi {
 		private void Movebtn_Click(object sender, EventArgs e) {
 			tower.Move();
 			SetPoles();
-			MoveCount++;
-			numMovesCount.Text = MoveCount.ToString();
+			numMovesCount.Text = (++MoveCount).ToString();
 			if(tower.Solved) {
 				MessageBox.Show("New Solved!8");
 				SetButtons(false);
@@ -46,9 +45,9 @@ namespace Towers_Of_Hanoi {
 		}
 
 		private void SetPoles() {
-			poleBox0.Text = tower.GetPole(0).ToString();
-			poleBox1.Text = tower.GetPole(1).ToString();
-			poleBox2.Text = tower.GetPole(2).ToString();
+			poleBox0.Text = tower.GetPole(0);
+			poleBox1.Text = tower.GetPole(1);
+			poleBox2.Text = tower.GetPole(2);
 		}
 
 		private void SetButtons(bool state) {

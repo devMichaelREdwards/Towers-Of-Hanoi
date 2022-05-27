@@ -2,7 +2,7 @@
 
 namespace Towers_Of_Hanoi {
 	class Disk {
-		public int Size { get; set; }
+		public readonly int Size;
 
 		public Disk() {
 		}
@@ -12,7 +12,7 @@ namespace Towers_Of_Hanoi {
 		}
 
 		public override string ToString() {
-			return $"{Size}({new String('_', Size)})";
+			return $"{Size}({new string('_', Size)})";
 		}
 	}
 }

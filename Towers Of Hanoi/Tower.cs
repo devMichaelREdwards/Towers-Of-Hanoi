@@ -1,21 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Towers_Of_Hanoi {
 	class Tower {
-		public const int NUM_OF_TOWERS = 3;
+		private static readonly Pole EmptyPole = new Pole();
 		public int NumOfDisks { get; set; }
-		private Pole[] Poles = new Pole[3];
-		private int Direction;
+		private readonly Pole[] Poles = new Pole[3];
 		private Disk LastSuccMove = new Disk();
 		private Disk CurrentDisk;
+		private readonly int Direction;
 		private int CurrentPole;
 		private int DestPole;
-		private int LoopPole;
-		private static Pole EmptyPole = new Pole();
-		public bool Solved {
-			get => Poles[2].Count == NumOfDisks;
-		}
+		private readonly int LoopPole;
+		public bool Solved { get => Poles[2].Count == NumOfDisks; }
+		private int GoToNextPole { get => LastSuccMove.Size == CurrentDisk.Size || DestPole == CurrentPole || CurrentDisk.Size == 0 ? 1 : 0; }
+		private bool NotValidMove { get => !Poles[DestPole].CanPush(CurrentDisk = Poles[CurrentPole].Peek) || LastSuccMove.Size == CurrentDisk.Size; }
+		public string MovesToSolve { get => ((int)(Math.Pow(2, NumOfDisks) - 1)).ToString(); }
 
 		public Tower(int numOfDisks) {
 			NumOfDisks = numOfDisks;
@@ -27,20 +26,8 @@ namespace Towers_Of_Hanoi {
 			Poles[0].GameSetup(NumOfDisks);
 		}
 
-		public int MovesToSolve() {
-			return (int)(Math.Pow(2, NumOfDisks) - 1);
-		}
-
-		public Pole GetPole(int index) {
-			return index >= 0 && index <= 2 ? Poles[index] : EmptyPole;
-		}
-
-		public override string ToString() {
-			String retString = "";
-			foreach(Pole p in Poles) {
-				retString += p.ToString() + Environment.NewLine;
-			}
-			return retString;
+		public string GetPole(int index) {
+			return index >= 0 && index <= 2 ? Poles[index].String : EmptyPole.String;
 		}
 
 		public void Move() {
@@ -51,24 +38,20 @@ namespace Towers_Of_Hanoi {
 		}
 
 		private void FindNextValidMove() {
-			while(notValidMove()) {
-				int next = GoToNextPole();
+			while(NotValidMove) {
+				int next = GoToNextPole;
 				CurrentPole = next == 1 && OutOfBounds(CurrentPole) ? LoopPole : CurrentPole + Direction * next;
 				int checkPole = next == 1 ? CurrentPole : DestPole;
 				DestPole = OutOfBounds(checkPole) ? LoopPole : checkPole + Direction;
 			}
 		}
 
-		private int GoToNextPole() {
-			return LastSuccMove.Size == CurrentDisk.Size || DestPole == CurrentPole || CurrentDisk.Size == 0 ? 1 : 0;
+		private bool OutOfBounds(int pole) {
+			return (pole + Direction > 2) || (pole + Direction < 0);
 		}
 
-		private bool OutOfBounds(int Pole) {
-			return (Pole + Direction > 2) || (Pole + Direction < 0);
-		}
-
-		private bool notValidMove() {
-			return !Poles[DestPole].CanPush(CurrentDisk = Poles[CurrentPole].Peek()) || LastSuccMove.Size == CurrentDisk.Size;
+		public override string ToString() {
+			return string.Join<Pole>(Environment.NewLine, Poles);
 		}
 	}
 }
